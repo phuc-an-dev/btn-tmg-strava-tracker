@@ -1,0 +1,11 @@
+export function ContributionsSkeleton(){
+ return <article className="statistics-card contributions-card" aria-label="Đang tải đóng góp" aria-busy="true"><div className="contribution-heading"><span className="member-skeleton-block" style={{width:150,height:20}}/><span className="member-skeleton-block" style={{width:100,height:36}}/></div><span className="member-skeleton-block" style={{width:190,height:18,margin:'8px 0 14px'}}/><div className="contribution-grid">{[0,1,2].map(i=><div className="contribution-metric" key={i}><span className="member-skeleton-block" style={{width:'65%',height:16,margin:'0 auto 8px'}}/><div className="contribution-waffle member-skeleton-block"/><span className="member-skeleton-block" style={{width:'60%',height:24,margin:'8px auto'}}/><span className="member-skeleton-block" style={{width:'75%',height:16,margin:'0 auto'}}/></div>)}</div><p className="contribution-note">Ba tỷ lệ tính riêng trên tổng bước thực tế đã duyệt.</p></article>;
+}
+
+export function StatisticsChartSkeleton(){return <div className="statistics-chart-skeleton member-skeleton-block" aria-hidden="true"/>;}
+export function StatisticsSkeleton({embed=false}:{embed?:boolean}) {
+ return <section className="statistics-panel" role="status" aria-label="Đang tải thống kê" aria-busy="true">
+  {!embed&&<><div className="segmented-tabs statistics-skeleton-tabs scope-skeleton" aria-hidden="true">{[0,1,2].map(i=><span key={i} className="member-skeleton-block"/>)}</div><div className="statistics-controls" aria-hidden="true"><div className="member-skeleton-block statistics-picker-skeleton statistics-picker-compact" style={{borderRadius:12}}/><div className="segmented-tabs statistics-skeleton-tabs two statistics-period-tabs">{[0,1].map(i=><span key={i} className="member-skeleton-block"/>)}</div></div></>}
+  <div className="statistics-card" aria-hidden="true"><span className="member-skeleton-block" style={{width:110,height:16}}/><span className="member-skeleton-block" style={{width:160,height:32,marginTop:10}}/><div className="segmented-tabs statistics-skeleton-tabs two">{[0,1].map(i=><span key={i} className="member-skeleton-block"/>)}</div><StatisticsChartSkeleton/><div className="statistics-legend"><span className="member-skeleton-block" style={{width:110,height:36}}/></div></div>
+ </section>;
+}

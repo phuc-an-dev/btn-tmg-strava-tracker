@@ -1,0 +1,9 @@
+project_id = "btn-tmg-strava-tracker"
+
+# Scoped hosted Auth settings. Unspecified properties remain unchanged.
+[auth.email]
+otp_length = 6
+
+[auth.email.template.confirmation]
+subject = "Mã xác nhận đăng ký REVIVE"
+content_path = "./supabase/templates/confirmation.html"

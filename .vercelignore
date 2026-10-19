@@ -1,0 +1,8 @@
+exports/
+supabase/
+.env*
+.git/
+.next/
+node_modules/
+*.tsbuildinfo
+AGENTS.md

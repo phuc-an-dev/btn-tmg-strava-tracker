@@ -1,0 +1,49 @@
+{
+  "name": "btn-tmg-strava-tracker",
+  "version": "0.1.0",
+  "description": "Mobile-first TMG running tracker starter",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phuc-an-dev/btn-tmg-strava-tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/phuc-an-dev/btn-tmg-strava-tracker/issues"
+  },
+  "homepage": "https://github.com/phuc-an-dev/btn-tmg-strava-tracker#readme",
+  "dependencies": {
+    "@base-ui/react": "^1.9.0",
+    "@supabase/supabase-js": "^2.117.3",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
+    "lucide-react": "^1.55.0",
+    "next": "^16.4.0",
+    "nuqs": "^2.10.2",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-is": "^19.3.0",
+    "recharts": "^3.10.1",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/web-push": "^3.6.4",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3"
+  },
+  "private": true
+}
