@@ -1,8 +1,46 @@
-# REVIVE — Mỗi bước chân, một hành trình chung
+<p align="center">
+  <img src="public/revive/app-icon-192.png" width="88" alt="Logo REVIVE">
+</p>
 
-Web app theo dõi bộ môn đi bộ của Hội thao Ban Thanh Niên Trương Minh Giảng: giúp thành viên nhìn lại thành quả, giúp Ban Tổ Chức (BTC) giảm công việc đối chiếu và tập trung kết quả về một nơi.
+<h1 align="center">REVIVE</h1>
+<p align="center"><strong>Mỗi bước chân, một hành trình chung.</strong></p>
+<p align="center">
+  Từ những bài đi bộ trên Strava đến kết quả Hội thao mà mọi người có thể cùng theo dõi.
+</p>
 
-**[Mở REVIVE](https://btn-tmg-strava-tracker.vercel.app)** · **[Chrome extension đồng bộ Strava](https://github.com/phuc-an-dev/btn-tmg-strava-crawler-extension)**
+<p align="center">
+  <a href="https://btn-tmg-strava-tracker.vercel.app"><strong>Trải nghiệm REVIVE ↗</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/phuc-an-dev/btn-tmg-strava-crawler-extension">Repo Chrome extension</a>
+  &nbsp;·&nbsp;
+  <a href="#chạy-ở-máy-cá-nhân">Chạy ở máy cá nhân</a>
+</p>
+
+<p align="center">
+  Next.js 16 · React 19 · TypeScript · Supabase · Tailwind CSS 4
+</p>
+
+<p align="center">
+  <a href="docs/screenshots/activities.png"><img src="docs/screenshots/activities.png" width="30%" alt="Hoạt động cá nhân, điểm đã duyệt và điểm chờ duyệt"></a>
+  <a href="docs/screenshots/rankings.png"><img src="docs/screenshots/rankings.png" width="30%" alt="Xếp hạng cá nhân và vị trí hiện tại trong Hội thao"></a>
+  <a href="docs/screenshots/statistics.png"><img src="docs/screenshots/statistics.png" width="30%" alt="Thống kê nhịp độ, so sánh số bước của năm cá nhân"></a>
+</p>
+
+<p align="center"><strong>Hoạt động</strong> · Theo dõi trạng thái và điểm<br><strong>Xếp hạng</strong> · Biết vị trí của mình<br><strong>Thống kê</strong> · So sánh nhịp độ giữa các thành viên</p>
+
+<p align="center">
+  <a href="docs/screenshots/contributions.png"><img src="docs/screenshots/contributions.png" width="30%" alt="Tỷ lệ đóng góp số bước cá nhân vào toàn Hội thao"></a>
+  <a href="docs/screenshots/appeals.png"><img src="docs/screenshots/appeals.png" width="30%" alt="Biểu mẫu khiếu nại và đối chiếu thông tin hoạt động"></a>
+  <a href="docs/screenshots/about.png"><img src="docs/screenshots/about.png" width="30%" alt="Trang giới thiệu thông điệp và lịch trình Hội thao REVIVE"></a>
+</p>
+
+<p align="center"><strong>Đóng góp</strong> · Nhìn thấy phần mình trong kết quả chung<br><strong>Khiếu nại</strong> · Gửi đề nghị đối chiếu hoạt động<br><strong>Giới thiệu</strong> · Khám phá tinh thần REVIVE</p>
+
+<p align="center"><sub>6 ảnh chụp thực tế ngày 19/10/2026. Nhấn vào từng ảnh để xem đầy đủ; số liệu là tại thời điểm chụp.</sub></p>
+
+REVIVE là web app theo dõi bộ môn đi bộ của Hội thao Ban Thanh Niên Trương Minh Giảng: giúp thành viên nhìn lại thành quả, giúp Ban Tổ Chức (BTC) giảm công việc đối chiếu và tập trung kết quả về một nơi.
+
+**Khám phá:** [Câu chuyện dự án](#vì-sao-có-revive) · [Chức năng](#các-chức-năng-chính) · [Luồng dữ liệu](#hai-repo-phối-hợp-như-thế-nào) · [Công nghệ](#công-nghệ) · [Đóng góp](#dữ-liệu-và-đóng-góp)
 
 ## Vì sao có REVIVE?
 
@@ -44,12 +82,13 @@ REVIVE ưu tiên giao diện điện thoại và hỗ trợ mở từ màn hình
 
 ## Hai repo phối hợp như thế nào?
 
-```text
-Strava club → Chrome extension → API của REVIVE → Supabase
-                                                      ↓
-                                              BTC kiểm tra, duyệt
-                                                      ↓
-                                       Kết quả, thống kê, xếp hạng
+```mermaid
+flowchart LR
+    A[Club Strava] --> B[Chrome extension]
+    B --> C[API REVIVE]
+    C --> D[(Supabase)]
+    D --> E[BTC kiểm tra và duyệt]
+    E --> F[Kết quả · Thống kê · Xếp hạng]
 ```
 
 - **Repo này:** giao diện web, API nhận đồng bộ, xác thực, nghiệp vụ duyệt và cơ sở dữ liệu.
