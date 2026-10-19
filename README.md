@@ -1,143 +1,178 @@
-# BTN TMG Strava Tracker
+# REVIVE — Mỗi bước chân, một hành trình chung
 
-Mobile-first Next.js application with Vietnamese UI and 48px touch controls.
+Web app theo dõi bộ môn đi bộ của Hội thao Ban Thanh Niên Trương Minh Giảng: giúp thành viên nhìn lại thành quả, giúp Ban Tổ Chức (BTC) giảm công việc đối chiếu và tập trung kết quả về một nơi.
 
-## Development
+**[Mở REVIVE](https://btn-tmg-strava-tracker.vercel.app)** · **[Chrome extension đồng bộ Strava](https://github.com/phuc-an-dev/btn-tmg-strava-crawler-extension)**
 
-Copy `.env.example` to `.env.local` and supply the Supabase project URL and publishable key. Run `npm ci`, then `npm run dev`.
+## Vì sao có REVIVE?
 
-Validation: `npm run lint`, `npm run typecheck`, `npm run build`.
+Hội thao BTN thường diễn ra vào tháng 10–11, với 10 nhóm nhỏ được chia vào 5 liên đoàn. Bộ môn đi bộ ghi nhận số bước của từng người và cộng điểm khi đi chung để khuyến khích sự gắn kết.
 
-## Members and access
+Năm 2025, club Strava có hơn 600 bài đăng. Việc kiểm tra từng bài, xuất CSV, tổng hợp Google Sheets và trả lời các câu hỏi về kết quả tốn rất nhiều thời gian. Thành viên cũng khó tìm lại bài, biết bài nào đã được duyệt hoặc theo dõi thành tích của nhóm mình.
 
-The home page and `/members` use real Supabase authentication and database records. The REVIVE identity uses the supplied logo and blue, lime, and orange palette; `/about` presents the theme, scripture, event timeline, and organizer slides. `/demo` is an illustrative activity dashboard; it does not contribute competition results.
+REVIVE ra đời từ nhu cầu đó. Phiên bản đầu được mình thực hiện trong một tuần ngoài giờ làm việc, từ ý tưởng, chia nhỏ công việc, giao diện và dữ liệu đến triển khai, kiểm thử và sửa lỗi. Dự án có sự hỗ trợ của AI trong quá trình phát triển và biên soạn tài liệu; các quyết định về nghiệp vụ và việc kiểm tra kết quả do người phát triển thực hiện.
 
-- Admin: assign members to divisions/groups, link login accounts, assign roles.
-- Leader: view the participant roster. Activity review is a future module.
-- User: view the participant roster after an admin links their account.
-- Unlinked accounts and anonymous visitors cannot read the roster.
+## Các chức năng chính
 
-Database RLS and admin-only RPCs enforce authorization. Clients cannot directly update roles or member assignments. SQL migrations are in `supabase/migrations`; rollback-only authorization checks are in `supabase/tests/roles.sql`.
+### Dành cho người tham gia và người theo dõi
 
-The initial admin reservation is private and activates once the reserved email is verified. It then links the reserved Strava athlete and removes the reservation. Do not disable email verification to bypass this step.
+- **Tra cứu hoạt động:** xem bài đi bộ, trạng thái duyệt và các bài cần bổ sung; mở nhanh bài gốc trên Strava để đối chiếu.
+- **Xếp hạng:** theo dõi cá nhân, nhóm nhỏ, liên đoàn; xem theo tuần hoặc toàn Hội thao, với bộ lọc giới tính ở bảng cá nhân. Top Kudo được theo dõi riêng.
+- **Thống kê:** xem nhịp độ theo ngày và tiến độ tích lũy; so sánh tối đa 5 cá nhân, nhóm nhỏ hoặc liên đoàn.
+- **Đóng góp và vinh danh:** xem phần đóng góp số bước và bảng vinh danh; có chế độ trình chiếu cho phần vinh danh.
+- **Khiếu nại:** thành viên đăng nhập có thể gửi yêu cầu đối chiếu hoạt động và theo dõi phản hồi của BTC.
+- **Thông tin Hội thao:** trang giới thiệu trình bày thông điệp, câu gốc, lịch trình và thành viên BTC.
 
-## Strava data
+### Dành cho BTC
 
-The current roster was collected from all three pages of club 2368312 in the authenticated Strava website, deduplicated by athlete ID, and imported into Supabase. There are 65 members. Strava club Owner/Admin labels do not grant website permissions. All division/group assignments initially remain empty.
+- Duyệt đăng ký, liên kết tài khoản với thành viên Strava, phân nhóm nhỏ/liên đoàn và quản lý vai trò.
+- Duyệt hoạt động, kiểm tra số bước và số người đi chung, ghi chú điều chỉnh, chấp nhận hoặc từ chối.
+- Tiếp nhận khiếu nại, đối chiếu đề xuất với dữ liệu hiện tại và cập nhật kết quả kèm lý do xử lý.
+- Theo dõi lịch sử thao tác qua Audit.
+- Nhận thông báo đăng ký và khiếu nại mới qua chuông trong app; hỗ trợ email và Web Push khi được cấu hình.
 
-Local snapshots in `exports/` and the generated `supabase/seed-members.sql` are ignored by Git. Re-imports must update source fields only, preserving manual assignments. Website synchronization is currently manual; no automated activity or steps ingestion is implemented. No Strava session cookie is stored in this repository.
+Các trang thành viên, hoạt động, xếp hạng, thống kê, đóng góp và vinh danh có chế độ xem công khai. Các thao tác cá nhân và quản trị yêu cầu đăng nhập, liên kết tài khoản hoặc quyền tương ứng. Quyền dữ liệu được kiểm soát tại Supabase bằng RLS và các RPC, ngoài kiểm tra giao diện.
 
-## Deployment
+## Dùng trên điện thoại
 
-Deploy to Vercel with both public Supabase environment variables. Configure Supabase Auth Site URL and allowed redirects for the production URL before email confirmation or password-reset links are used. Configure a working SMTP provider for participant signup; successful builds do not verify email delivery.
+REVIVE ưu tiên giao diện điện thoại và hỗ trợ mở từ màn hình chính:
 
-## Club activity review
+- **iPhone/iPad:** mở bằng Safari → Chia sẻ → Thêm vào Màn hình chính.
+- **Android:** mở bằng Chrome → menu → Cài đặt ứng dụng hoặc Thêm vào màn hình chính, tùy trình duyệt.
 
-The admin-only **Hoạt động** tab in `/members` imports the extension's normalized activities export (including excluded records). Imports are atomic, limited to 1,000 records per file, and deduplicate by activity ID without overwriting previously reviewed values. Original source data is retained. Invalid parsed party sizes remain unknown in editable fields.
+Đây là web app, cần kết nối mạng để tải dữ liệu. Service worker hiện phục vụ thông báo, không cung cấp chế độ dùng ngoại tuyến. Liên kết Strava sẽ mở bên ngoài app.
 
-New activities are pending and have zero credited points. Admins can edit steps, party size and division, save pending, approve or reject. Approval requires a current active member with a small-group assignment, a matching division, Walk sport, local activity date within 2026-10-04 through 2026-11-15, and steps/party size. Corrected or manually supplied steps require a note. Party size includes the activity author; solo is base steps, otherwise round(steps * (1 + party_size / 10)). Group assignment is snapshotted when approved. Returning to pending or rejecting removes credited points. Optimistic revision checks prevent stale updates, and reviews append audit records.
+## Hai repo phối hợp như thế nào?
 
-Database migration files `202610130002_club_activities.sql` and `202610130003_import_invalid_party_size.sql` define RLS and admin-only RPCs. Direct authenticated writes and anonymous access are not granted. The transactional test `supabase/tests/club_activities.sql` rolls back its fixtures and checks authorization, deduplication, points, stale reviews and notes. `node --test tests/*.test.mjs` checks the frontend helpers and existing portal behavior.
+```text
+Strava club → Chrome extension → API của REVIVE → Supabase
+                                                      ↓
+                                              BTC kiểm tra, duyệt
+                                                      ↓
+                                       Kết quả, thống kê, xếp hạng
+```
 
-The extension still exports locally; automatic authenticated upload from the extension to this site is not part of this version.
+- **Repo này:** giao diện web, API nhận đồng bộ, xác thực, nghiệp vụ duyệt và cơ sở dữ liệu.
+- **[Repo extension](https://github.com/phuc-an-dev/btn-tmg-strava-crawler-extension):** công cụ dành cho người được BTC cấp quyền đồng bộ, chạy trong trình duyệt đã đăng nhập Strava.
 
-### Internal Strava extension sync
+Đồng bộ được khởi động từ extension; web không tự lấy dữ liệu Strava theo lịch. Dữ liệu mới nhập ở trạng thái chờ duyệt, chưa được tính điểm.
 
-Production accepts `POST /api/extension/activities` with `Authorization: Bearer <STRAVA_SYNC_SECRET>` and a JSON body containing `club_id: "2368312"` and 1–50 normalized activities. Keep the secret server-only; it is not a `NEXT_PUBLIC_*` variable. Database migration `202610140001_extension_sync.sql` creates a private hash configuration and a narrow import RPC. Configure the private hash and Vercel secret together. No service-role key is needed. This credential can only insert pending activities, with duplicate IDs skipped, at most 60 successful batches per minute. Raw source rows remain available for review; incoming points/status/notes/reviewer fields cannot grant approval. Admin/leader activity views refresh in the background every 60 seconds while visible and no review drawer is open.
+## Cách ghi nhận kết quả
 
-The extension lives in the sibling `btn-tmg-strava-crawler-extension` directory. Reload its unpacked installation and Strava tab after updating. Enter the shared secret once, click **Lưu mã**, and use **Gửi lại** for an existing saved crawl. Upload errors preserve the checkpoint. The secret file under `exports/` is local, ignored and excluded from Vercel uploads; do not commit or distribute it. Shared-secret imports are audited as **Extension Strava**, not attributed to an individual admin.
+Bản hiện tại dành cho Hội thao 2026, với khoảng thời gian hoạt động **04/10/2026–15/11/2026**, theo giờ Việt Nam.
 
-Version 0.4.0 also syncs a complete club roster from the authenticated Strava Members page to `/api/extension/members`. This importer updates Strava source fields only, preserves assignments and account links, keeps absent members, and records aggregate counts in Audit. See the extension README for setup instructions.
+- Chỉ hoạt động **Walk** hợp lệ và **đã duyệt** mới đóng góp vào kết quả thi đấu.
+- Bảng cá nhân dùng số bước thực tế; bảng nhóm nhỏ/liên đoàn dùng điểm đã duyệt, có cộng thưởng đi chung.
+- Đi một mình: điểm bằng số bước. Từ 2 người: `round(số bước × (1 + số người / 10))`. Số người bao gồm người tạo hoạt động.
+- Thống kê dùng bước thực tế đã duyệt đến hết hôm qua, không cộng thưởng đi chung.
+- Kudo được theo dõi riêng, không cộng vào điểm đi bộ.
+- Bài thiếu activity đính kèm nằm trong **Cần bổ sung**, không được suy ra số bước từ tiêu đề để tính điểm.
+- Việc đổi trạng thái duyệt hoặc xử lý khiếu nại có thể làm kết quả thay đổi.
 
-Version 0.4.0 also syncs the complete Strava club roster from the authenticated Members page to `/api/extension/members`. The import updates only Strava source fields, preserves all assignments and account links, keeps absent rows, and records aggregate counts in Audit. See the extension README for use instructions.
+## Công nghệ
 
-### Portal routes and URL state
+| Thành phần | Công nghệ |
+| --- | --- |
+| Web | Next.js 16, React 19, TypeScript |
+| Giao diện | Tailwind CSS 4, Base UI, Lucide |
+| Biểu đồ và bộ lọc URL | Recharts, nuqs |
+| Dữ liệu và xác thực | Supabase PostgreSQL, Auth, RLS, RPC |
+| Triển khai | Vercel |
+| Email thông báo BTC | Resend |
+| Thông báo thiết bị | Web Push, VAPID |
 
-Authenticated pages share `src/app/(portal)/layout.tsx`: `/members`, `/activities`, `/audit`, `/groups`, `/accounts`, and `/division`. The shared `MemberPortal` owns auth, cached roster data, layout and assignment drawers; route pages render their own content through `PortalContext`. Navigation uses Next.js links, preserves the shared layout, and derives the active navigation item from the pathname. Accounts, Groups and Audit require admin; Division requires leader. Browser-side route guards complement the existing Supabase RLS/RPC checks, which remain authoritative.
+Email OTP đăng ký do Supabase Auth gửi qua cấu hình SMTP của dự án. Email thông báo BTC dùng luồng Resend riêng.
 
-`src/lib/portal-query.ts` defines nuqs parsers. Members use `q`, `division`, `page`, `size`; Activities use `q`, `status`, `division`, `page` (members also use `scope` and `group`); Accounts use `q`, `role`, `link`; Audit uses `q`, `action`, `page`. Defaults are omitted. Search replaces history with 300ms URL debounce and separately debounces client data queries. Filters are committed together only after drawer confirmation and reset page to 1; tab/filter/page navigation pushes history. Draft selection and edits remain local state. Invalid enum values fall back to defaults, and page requests beyond available data are corrected. Login retains a safe internal deep link and its queries. `/` still redirects to the public `/about` page.
+## Chạy ở máy cá nhân
 
-### Home Screen app
+### Yêu cầu
 
-`src/app/manifest.ts` defines a stable app ID `/`, start URL `/members`, scope `/`, and standalone display. Root metadata enables Apple's web app mode and uses a square 180px touch icon; the manifest provides square 192px and 512px icons. All internal navigation uses the same origin. External Strava links intentionally open outside the app. `/register` remains a shareable registration link.
+- Node.js 20.9 trở lên và npm; nên dùng bản Node LTS đáp ứng yêu cầu của dependency.
+- Một dự án Supabase riêng cho phát triển, với schema và cấu hình Auth phù hợp.
 
-Login and registration show a collapsible Home Screen guide on iPhone/iPad browsers, hidden when already running standalone. After deploying changed installation metadata, remove the old Home Screen shortcut and add the app again through Safari. Verify on a physical iPhone: launch from the new icon, log in, navigate through allowed routes, sign out and open registration; in-scope navigation should retain standalone presentation. Safari and the installed app can have separate sessions. Build and HTTP metadata checks do not verify the installed iOS experience.
+```bash
+git clone https://github.com/phuc-an-dev/btn-tmg-strava-tracker.git
+cd btn-tmg-strava-tracker
+npm ci
+cp .env.example .env.local
+```
 
-### Signup confirmation by email OTP
+Điền hai biến để kết nối Supabase:
 
-Registration still creates a password-based account with profile metadata. After `signUp`, users remain on `/register` to enter a six-digit email code. `verifyOtp` uses `type: "email"` and establishes the session in the same browser/app before following the safe portal redirect. Login remains email and password.
+```dotenv
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+```
 
-`SignupOtpForm` supports one-time-code autofill, paste, actionable verification errors, a 60-second resend cooldown and changing the email. `resend` uses `type: "signup"`. Only pending email and send time are saved in session storage; passwords and OTPs are never persisted. Reloading resumes confirmation when browser storage is available.
+Sau đó:
 
-Hosted Auth configuration uses `mailer_otp_length: 6`, `mailer_subjects_confirmation: "Mã xác nhận đăng ký REVIVE"`, and the contents of `supabase/templates/confirmation.html` as `mailer_templates_confirmation_content`. The template displays `{{ .Token }}` and has no confirmation link. Apply only these fields through the Supabase Management API or Auth email-template dashboard. `supabase/config.toml` records the scoped intent; CLI config diff/push may not include the hosted template body, so verify it separately. Preserve SMTP, confirmation requirements, expiry and existing rate limits. A config/build check does not prove email delivery; verify a real signup, newest-code resend and successful verification in the same installed app/browser.
+```bash
+npm run dev
+```
 
-### Incomplete discussion reports
-Extension 0.5.0 also sends report posts to `/api/extension/posts` using the existing shared secret. Reports without embedded Activity data live in `club_incomplete_posts`, separate from scoreable activities, and appear under **Cần bổ sung**. Only title, author and post time are displayed; no title-derived steps, party size, points or approval controls are exposed. Successfully imported linked activities resolve the report on the next crawl. Reload the unpacked extension and Strava tab, then start a fresh crawl for older posts. Missing author IDs remain local and are reported in delivery details.
+Mở [localhost:3000](http://localhost:3000). Trang `/about` giới thiệu Hội thao; các trang có dữ liệu cần Supabase được thiết lập đầy đủ. Repo không kèm dữ liệu thành viên thật hoặc tài khoản quản trị dùng thử.
 
-### Rankings
-Authenticated users can view `/rankings`. `get_rankings` aggregates only approved Walk activities within the event period. Individual ranks use actual steps; group/division ranks use approved points attributed at review time. Dense ties share a rank. Participation counts distinct active roster members with their own approved activity, using current assignments; party sizes do not identify participants. Gender filters include only linked profiles with known gender. Weekly results use Monday–Sunday in Vietnam time. Milestone badges use approved lifetime event steps and distinct activity dates and are recalculated after reviews; seven days need not be consecutive. No account contact fields, birth years or review source/notes are exposed by the ranking RPC.
+### Thiết lập Supabase
 
-### Discussion kudos
-Extension 0.6.0 reads `post.kudos_count` and `post.originator_name` from the club post feed. Post IDs, poster IDs, linked activity IDs and observation timestamps are sent through the existing `/api/extension/posts` endpoint and credential. `club_discussion_posts` stores current counts rather than accumulating receipts, and ignores older snapshots and author changes. Group/division attribution uses the first known roster assignment. `get_kudos_rankings` is authenticated and includes posts published during the selected event/week with at least one imported, in-period pending/approved Walk activity. Week filters publication time in Vietnam, not time kudos were given. Incomplete, rejected-only, non-Walk and unobserved posts are excluded. Counts never affect activity points. Reload the unpacked extension and Strava tab before starting a fresh crawl; old payloads remain compatible.
+SQL nằm trong `supabase/migrations/`, các bài kiểm tra cơ sở dữ liệu nằm trong `supabase/tests/`.
 
-### Discussion media
+Đây là mã nguồn của một ứng dụng đang vận hành, chưa phải bộ mẫu có thể dựng đầy đủ bằng một lệnh. Trước khi áp dụng lên dự án riêng:
 
-Apply `202610150003_post_media.sql` for direct discussion photos. Extension 0.7.0 sends photo URL snapshots with existing post synchronization. Top Kudo and incomplete post cards share a decorative thumbnail and an accessible bottom drawer gallery with swipe, keyboard/arrow navigation, loading and error states. Images load directly from the Strava CDN; the app does not copy them into Storage. Existing post eligibility, review permissions and scoring are unchanged.
+1. Rà soát migrations theo thứ tự phụ thuộc, đặc biệt phần khởi tạo admin và cấu hình dành riêng cho Hội thao.
+2. Kiểm tra version migration: hiện có hai tệp cùng tiền tố `202610140001`. Cần xử lý cách định danh trên bản sao phát triển trước khi dùng công cụ áp dụng migration; không đổi lịch sử của hệ thống đang chạy một cách tùy tiện.
+3. Cấu hình Auth Site URL, redirect URL cho localhost và môi trường triển khai. Bật xác nhận email, thiết lập SMTP và mẫu OTP 6 chữ số trong `supabase/templates/confirmation.html`.
+4. Chuẩn bị danh sách thành viên, nhóm nhỏ/liên đoàn và quyền admin cho môi trường của bạn. Xác nhận email không đồng nghĩa với việc đăng ký đã được BTC duyệt.
 
-Activity cards and Top Kudo use the activity media columns from `202610150004_activity_media.sql`. Incomplete posts retain direct post photos. Importing a duplicate activity refreshes only media, never review/scoring fields. Apply `supabase/tests/activity_media.sql` as a rollback test for this behavior.
+`supabase/config.toml` ghi nhận cấu hình OTP dự kiến; không thay thế việc kiểm tra cấu hình thực tế trên Supabase hosted.
 
-### Registration selections
+### Các tích hợp tùy chọn
 
-Apply `202610150005_signup_selections.sql` for the registration group and Strava drawers. `get_signup_options` exposes only a bounded page of active, unlinked Strava names/IDs and group assignments to signup clients; emails, account IDs and BTN names are excluded. The form requires a group and a Strava account selected from the roster, with search and pagination. `validate_signup_selection` and the auth signup trigger preserve any existing roster group and save requested selections on the pending profile. Selecting a profile does not claim it or grant membership. Admin linking preselects the requested athlete, retains assigned groups and applies a requested group only to the same, currently unassigned athlete. OTP verification keeps the existing flow. Backend assertions in `supabase/tests/signup_selections.sql` roll back all fixtures without sending email.
+| Biến môi trường server | Mục đích |
+| --- | --- |
+| `STRAVA_SYNC_SECRET` | Xác thực yêu cầu đồng bộ từ extension |
+| `RESEND_API_KEY`, `ADMIN_EMAIL_FROM` | Gửi email thông báo BTC |
+| `ADMIN_EMAIL_WORKER_SECRET` | Xác thực worker gửi thông báo |
+| `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` | Web Push cho thiết bị admin |
 
-### Registration review
+Xem tên biến đầy đủ trong [`.env.example`](.env.example). Không thêm tiền tố `NEXT_PUBLIC_` cho khóa bí mật.
 
-Apply `202610150006_registration_review.sql` after signup selections. `/accounts` shows verified pending registrations and previously approved/linked accounts in separate tabs. The admin-only `approve_registration` RPC rechecks email verification, required profile fields and the selected roster account, then links it and records the reviewer, timestamp and audit event atomically. Repeated approval is idempotent; assigned groups, historical activities, points and existing roles are preserved. Legacy links remain approved without inventing historical approval dates. Email verification is mirrored from Auth using a restricted trigger; clients cannot set review fields directly. `supabase/tests/registration_review.sql` exercises the flow with rolled-back fixtures and no mail delivery.
+- **Đồng bộ:** ngoài biến server, cấu hình SHA-256 của cùng mã bí mật trong `private.extension_sync_config`; mã phải có ít nhất 32 ký tự. Chỉ cấp mã cho người vận hành được phép đồng bộ.
+- **Email/Web Push:** cần các migrations thông báo, cấu hình private settings, worker URL, Vault và lịch pg_cron tương ứng. Chỉ đặt biến môi trường chưa đủ để bật các kênh này. Web Push còn cần người dùng chủ động cấp quyền trên thiết bị hỗ trợ.
+- **Môi trường phát triển:** dùng project, khóa và người nhận thử riêng; chỉ bật gửi sau khi đã cấu hình và kiểm tra luồng tương ứng.
 
-### Social previews
+## Kiểm tra và triển khai
 
-Route metadata uses dedicated 1200×630 PNGs in `public/revive/og/`; the in-page banners stay 1920×1080. Regenerate the preview cards with `node scripts/generate-social-images.mjs` (requires network access to Google Fonts' official repository). This renders HTML/CSS with `next/og` and includes the existing logo and a Vietnamese call to action. Update image version names when changing artwork so new previews have a distinct URL. Metadata titles are descriptive, with the route first and REVIVE/organizer branding after it. `/about` introduces the full event; auth and portal copy describe the Strava walking tracker, with account creation rather than event enrollment. Descriptions stay within 125 characters. Auth and portal routes remain noindex; preview images contain generic branding only.
+```bash
+npm run lint
+npm run typecheck
+node --test tests/*.test.mjs
+npm run build
+```
 
+Các tệp `supabase/tests/*.sql` cần chạy riêng trên cơ sở dữ liệu thử nghiệm đã có schema tương ứng; lệnh Node không chạy chúng. Đọc từng tệp trước khi thực thi.
 
-### Performance delivery
+Có thể triển khai trên Vercel sau khi chuẩn bị database, biến môi trường và Auth redirect URL. Với bản fork, cần thay địa chỉ website, endpoint của extension, club ID, thời gian Hội thao và các cấu hình thương hiệu liên quan. Các giá trị này hiện nằm ở nhiều tệp, chưa có một màn hình cấu hình chung.
 
-`20261015082420_activity_performance.sql` adds authenticated, bounded `get_review_activity_page` and `get_incomplete_post_page` RPCs. Review pages return 10 rows, global status counts and the existing approved total; filters/search/pagination run in PostgreSQL. Raw source, review notes and full detail rows load only when opening a review drawer. Inactive incomplete-post tabs request counts without media. Polling is 60 seconds, pauses while hidden, and refreshes when returning to the page; saving a review refreshes immediately.
+Build thành công chỉ xác nhận việc biên dịch. Cần kiểm tra riêng đăng ký/OTP, đồng bộ, duyệt, khiếu nại, kết quả và các kênh thông báo trên môi trường của bạn.
 
-Activity and ranking caches are memory-only, keyed by the actual session user and query, expire after 30 seconds, and are cleared on logout/account change or successful mutations. Epoch checks reject late responses, including logout and signing back into the same account. Run `node --test tests/activity-cache.test.mjs tests/portal-data.test.mjs` and the rolled-back database assertions in `supabase/tests/activity_performance.sql` for these boundaries.
+## Cấu trúc thư mục
 
-The two RLS policies retain their existing permissions while using scalar session lookups. The audit history index supports action/entity/date queries; other advisory-only indexes on tiny tables are intentionally unchanged. The hosted migration was applied through the Supabase migration API because linked CLI dry-run is blocked by pre-existing local/remote migration-version drift. Do not repair or rewrite migration history as part of this change.
+```text
+src/app/              Trang Next.js và API routes
+src/components/       Giao diện và các màn hình nghiệp vụ
+src/lib/              Kiểu dữ liệu, tiện ích và xử lý phía ứng dụng
+supabase/migrations/  Schema, RLS và RPC
+supabase/tests/       Kiểm tra cơ sở dữ liệu
+supabase/templates/   Mẫu email Auth
+public/               Hình ảnh, manifest assets và service worker
+scripts/              Công cụ hỗ trợ
+tests/               Kiểm tra bằng Node.js
+```
 
-Card backgrounds use the imported Strava thumbnail when distinct. Existing snapshots that only contain a full photo use Next image optimization, restricted to the existing Strava CDN host with redirects disabled. Full gallery images keep their original CDN URL. No URL parameters are invented and no copies are stored in Supabase Storage. OG image filenames are versioned and use immutable browser caching; change filenames when replacing an image.
+## Dữ liệu và đóng góp
 
-`vercel.json` places functions in `icn1`, beside the existing Seoul Supabase project. Static delivery remains on Vercel CDN. Speed Insights reports Web Vitals with query strings/fragments removed; browser User Timing entries named `supabase:rpc:<function>` record RPC fetch durations without query values, account identifiers, or response bodies. These timings include the network until response headers; they do not measure JSON parsing or database time alone.
+Không đưa `.env.local`, mã đồng bộ, API key, bản xuất dữ liệu hoặc thông tin cá nhân thành viên vào commit, issue hay ảnh chụp công khai. Thư mục `exports/` và seed danh sách thành viên đã được loại khỏi Git.
 
-Vercel Web Analytics runs once from the root layout alongside Speed Insights, using `@vercel/analytics/next`. It records page views and client navigation; the shared `beforeSend` callback strips query strings and fragments from event URLs. No account fields, form contents or custom user events are supplied by this integration. Web Analytics must be enabled for the Vercel project; view traffic under Analytics and performance under Speed Insights. Google Analytics and Search Console are not configured by this integration.
+Nếu muốn góp ý hoặc báo lỗi, bạn có thể [mở issue](https://github.com/phuc-an-dev/btn-tmg-strava-tracker/issues) với mô tả, bước tái hiện và ảnh đã che thông tin cá nhân. Khi gửi thay đổi, hãy mô tả mục đích và cách kiểm tra; ưu tiên dùng dữ liệu giả lập.
 
-### Admin email notifications
-
-Apply `202610170001_admin_notifications.sql`, `202610170002_admin_email_delivery.sql` and `202610170003_admin_email_worker_runtime.sql`. Verified registrations awaiting approval and new appeals create bell notifications plus a durable email outbox, with a separate delivery for every current, verified Admin email. Processing or deleting the underlying case cancels unsent deliveries; reading the bell does not. One reminder is scheduled 60 minutes after the initial email is accepted, only while the case remains pending. Existing activity approval events do not generate these emails.
-
-Production requires server-only `RESEND_API_KEY`, `ADMIN_EMAIL_FROM` and a random `ADMIN_EMAIL_WORKER_SECRET` (32–200 characters). The sender is `REVIVE <notifications@strava.tmgchurch.website>`; verify the domain and scope the Resend sending key to it. Store the worker token in Supabase Vault as `admin_email_worker_secret`, and only its SHA256 hex digest in `private.admin_email_settings.worker_secret_hash`. The private worker URL points to the production `/api/notifications/email-worker` endpoint. Never use a `NEXT_PUBLIC_` variable for either secret or enable this configuration in previews.
-
-Worker requests carry `Authorization: Bearer v1.<unix-seconds>.<hex-HMAC-SHA256>`, signing the timestamp with the worker secret; signatures expire after two minutes. The reusable token is never placed in pg_net's extension-owned queue, whose default public grants cannot be revoked by the hosted postgres role. The raw token is used only server-to-database for the narrow queue RPCs. The runtime migration also handles hosted safeupdate's explicit-WHERE requirement. Verify the actual Supabase-to-Vercel response after deployment, not just an empty disabled-worker response.
-
-After deploying and successfully testing the sender against Resend's `delivered@resend.dev` test recipient, enable the private settings and schedule `select private.admin_email_tick();` every minute with pg_cron job name `revive-admin-email-delivery`. New notifications also wake the worker immediately; cron retries missed wake-ups and due deliveries. The dispatcher skips Vercel requests when no work is due. To pause sending, set `private.admin_email_settings.enabled=false`; keep the queue for resumption. Rotate the worker token in Vercel, Vault and the private digest together while paused.
-
-Each worker claims at most five deliveries with five-minute leases, rechecks recipient permissions and case status, and freezes the rendered payload before sending. Retries reuse the same Resend idempotency key and payload. Exponential retries stop after 12 attempts or 23 hours to avoid crossing Resend's idempotency window. Failed jobs remain visible in the Admin bell's email health summary for investigation. `sent` means Resend accepted the email, not confirmed inbox placement; this integration does not receive bounce or delivery webhooks. Correct provider configuration before retrying a failed delivery, and investigate the stored provider ID before requeuing any ambiguous send.
-
-Run `node --test tests/admin-email.test.mjs` for transport/idempotency behavior and `supabase/tests/admin_email_delivery.sql` as a rolled-back database test. The latter sends no emails and covers leases, retries, cancellation, reminders, authorization and recipient revocation. Do not use real Admin recipients for test fixtures.
-
-### Admin Web Push
-
-Apply `202610170004_admin_web_push.sql`. Web Push is an additional channel for verified Admin accounts, with separate per-device subscriptions and a durable push queue. Email settings and reminders remain independent. Push contains generic text and an authenticated deep link, without names, emails or appeal reasons on the lock screen. Pending cases created after device opt-in are eligible for six hours; only one queue job exists per event/device. At send time, the worker rechecks Admin permission and the current case status. Expired endpoints (404/410) are removed, transient failures retry up to eight attempts within six hours, and provider TTL is one hour. Stable topics and notification tags reduce duplicate displays after ambiguous retries; Web Push does not guarantee exactly-once delivery or confirm display on the phone.
-
-Generate VAPID keys once with `web-push.generateVAPIDKeys()` and configure production server variables `VAPID_PUBLIC_KEY` and `VAPID_PRIVATE_KEY`. Never rotate the private key during routine deployment: existing subscriptions are tied to that key pair. Store only the public key in `private.admin_push_settings.public_key`. The worker uses the existing Vault worker secret and short-lived request signatures; the VAPID private key stays on Vercel. Enable the private push settings only after the worker is deployed. Schedule `select private.admin_push_tick();` every minute under job name `revive-admin-web-push`; immediate event wake-ups use the same dispatcher. No Vercel invocation occurs when no job is due. Pause using `private.admin_push_settings.enabled=false`.
-
-On iPhone/iPad (iOS/iPadOS 16.4+), add the website to the Home Screen using Safari, launch that installed app, sign in as Admin, then open the bell and tap **Bật thông báo**. Permission is requested only from that gesture. The bell offers **Gửi thử** (one test per minute per device), its latest provider acceptance status and a per-device off button. Subscription endpoints and encryption keys are hidden from all direct client table access; only the device's owner can register, test or remove it. Up to ten devices per Admin are supported. Explicit sign-out removes the device subscription, unsubscribes the browser and closes displayed notifications; email remains active for the Admin account. Closing the app without signing out keeps push enabled.
-
-`public/sw.js` handles notifications only, with no page/data caching or fetch interception. Clicks open only allowed same-origin routes. Subscriptions are limited to Apple's, Google's and Mozilla's public push endpoints; arbitrary URLs are rejected in both database and server code. The worker processes at most five devices concurrently with bounded network timeouts and lease-aware acknowledgements. Unit tests: `node --test tests/admin-push.test.mjs tests/admin-email.test.mjs`; rolled-back database assertions: `supabase/tests/admin_web_push.sql`. Physical iPhone validation still requires the user's permission, an installed Home Screen app and a real test from that device.
-
-Extension 0.9.0 finalizes full discussion crawls through `/api/extension/posts/complete`. Only unresolved incomplete reports absent from the complete raw Post ID snapshot and last updated before the crawl began are archived (`missing_since`), never deleted. Both incomplete readers exclude archives. A later complete scan restores reappearing reports, while private scan history retains archived/restored IDs. A complete empty feed is supported, failed/partial crawls cannot finalize, and retries/older scans cannot override a newer completed scan. Existing reviewed activities, scores and Top Kudo remain unchanged. Reload the unpacked extension and Strava tab before using **Lấy mới** or **Gửi lại** on an already complete saved crawl.
-
-
-Honors uses the same light, flat blue podium on mobile and desktop; gold/silver/bronze accents are limited to the winner icons. Desktop presentation retains native fullscreen, the pinned snapshot, name-before-count reveal sequence and Canvas confetti.
+REVIVE là dự án cộng đồng dành cho Hội thao BTN Trương Minh Giảng, không phải sản phẩm chính thức của Strava.
